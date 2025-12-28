@@ -1,0 +1,1239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NTILANE ∞ | The Infinite Family Tree</title>
+    <meta name="description" content="Permanent digital archive of the Ntilane bloodline.">
+    
+    <!-- FONTS & ICONS -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <style>
+        /* * ------------------------------------------------------------------
+         * THEME CONFIGURATION
+         * ------------------------------------------------------------------
+         */
+        :root {
+            --bg-deep: #121212;
+            --bg-card: #1e1e1e;
+            --bg-panel: #252525;
+            
+            --accent-gold: #d4af37;
+            --accent-gold-dim: #8a7122;
+            --accent-gold-glow: rgba(212, 175, 55, 0.3);
+
+            /* LINEAGE COLORS */
+            --paternal-color: #d4af37; /* Gold */
+            --maternal-color: #ce93d8; /* Amethyst/Lilac */
+            --maternal-glow: rgba(206, 147, 216, 0.3);
+            
+            --text-main: #f0f0f0;
+            --text-muted: #888888;
+            
+            --border-light: #333333;
+            --border-active: #555555;
+            
+            --node-w: 220px;
+            --node-h: 110px;
+            --level-spacing: 140px;
+            --sibling-spacing: 240px;
+        }
+
+        /* RESET & BASE */
+        * { box-sizing: border-box; outline: none; user-select: none; }
+        
+        body {
+            margin: 0;
+            background-color: var(--bg-deep);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            overflow: hidden;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        h1, h2, h3 { font-family: 'Cinzel', serif; margin: 0; color: var(--accent-gold); }
+        button { font-family: 'Inter', sans-serif; cursor: pointer; }
+
+        /* * ------------------------------------------------------------------
+         * UI COMPONENTS
+         * ------------------------------------------------------------------
+         */
+
+        /* HEADER */
+        header {
+            background: rgba(18, 18, 18, 0.98);
+            border-bottom: 1px solid var(--border-light);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 1rem;
+            backdrop-filter: blur(10px);
+            z-index: 100;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+            position: relative;
+            gap: 1rem;
+            height: auto; 
+            min-height: 70px;
+        }
+
+        .brand {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            position: static;
+            transform: none;
+            order: 1;
+        }
+        .brand h1 { font-size: 1.4rem; letter-spacing: 2px; }
+        .brand span { font-size: 0.7rem; color: var(--text-muted); letter-spacing: 1px; text-transform: uppercase; }
+
+        .search-bar {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            order: 2;
+        }
+        .search-bar input {
+            width: 100%;
+            background: var(--bg-card);
+            border: 1px solid var(--border-light);
+            padding: 0.6rem 1rem;
+            border-radius: 20px;
+            color: var(--text-main);
+            transition: all 0.3s;
+        }
+        .search-bar input:focus {
+            border-color: var(--accent-gold);
+            box-shadow: 0 0 10px var(--accent-gold-glow);
+        }
+
+        .actions { 
+            display: flex; 
+            gap: 0.6rem; 
+            width: 100%;
+            flex-wrap: wrap;
+            justify-content: center;
+            order: 3;
+        }
+
+        .btn {
+            background: var(--bg-panel);
+            color: var(--text-main);
+            border: 1px solid var(--border-light);
+            padding: 0.6rem 1rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            transition: all 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 500;
+            flex-grow: 1; 
+            text-align: center;
+            white-space: nowrap;
+        }
+        .btn:hover { background: var(--bg-card); border-color: var(--text-muted); }
+        
+        .btn.primary {
+            background: linear-gradient(135deg, var(--accent-gold), var(--accent-gold-dim));
+            color: #000;
+            border: none;
+            font-weight: 700;
+        }
+        .btn.primary:hover { filter: brightness(1.1); }
+
+        /* AI FEATURES STYLING */
+        .btn.magic {
+            background: linear-gradient(135deg, #7b2cbf, #9d4edd);
+            color: #fff;
+            border: none;
+        }
+        .btn.magic:hover { filter: brightness(1.2); box-shadow: 0 0 10px rgba(157, 78, 221, 0.4); }
+
+        .chat-msg { margin-bottom: 0.8rem; line-height: 1.4; font-size: 0.9rem; }
+        .chat-msg.user { color: var(--text-muted); text-align: right; }
+        .chat-msg.ai { color: var(--accent-gold); }
+        .typing-indicator { color: var(--text-muted); font-style: italic; font-size: 0.8rem; animation: pulse 1s infinite; }
+        @keyframes pulse { 50% { opacity: 0.5; } }
+
+        .btn.elder {
+            border: 1px solid var(--accent-gold-dim);
+            color: var(--accent-gold);
+            background: transparent;
+        }
+        .btn.elder.active {
+            background: var(--accent-gold-glow);
+            box-shadow: 0 0 15px var(--accent-gold-glow);
+        }
+
+        /* DESKTOP LAYOUT */
+        @media (min-width: 1024px) {
+            header {
+                height: 70px;
+                flex-direction: row;
+                justify-content: space-between;
+                padding: 0 2rem;
+                gap: 0;
+            }
+
+            .brand {
+                position: absolute;
+                left: 50%;
+                transform: translateX(-50%);
+                order: unset; 
+            }
+
+            .search-bar {
+                width: 300px;
+                margin: 0;
+                order: unset;
+            }
+
+            .actions {
+                width: auto;
+                justify-content: flex-end;
+                flex-wrap: nowrap;
+                order: unset;
+            }
+
+            .btn {
+                flex-grow: 0;
+                padding: 0.5rem 1.2rem;
+                font-size: 0.85rem;
+            }
+        }
+
+        /* CANVAS */
+        #viewport {
+            flex: 1;
+            position: relative;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            overflow: hidden;
+            cursor: grab;
+        }
+        #viewport:active { cursor: grabbing; }
+
+        #world {
+            position: absolute;
+            transform-origin: 0 0;
+        }
+
+        /* NODES */
+        .node {
+            position: absolute;
+            width: var(--node-w);
+            height: var(--node-h);
+            background: var(--bg-card);
+            border: 1px solid var(--border-light);
+            border-left: 3px solid var(--text-muted);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            padding: 0.8rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        .node:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            border-color: var(--accent-gold);
+            z-index: 20;
+        }
+
+        /* VERIFIED & LINEAGE STYLING */
+        .node.verified { 
+            border: 1px solid var(--accent-gold);
+            box-shadow: 0 0 15px var(--accent-gold-glow);
+        }
+
+        .node.selected { 
+            border: 2px solid var(--accent-gold); 
+            box-shadow: 0 0 20px var(--accent-gold-glow);
+        }
+
+        /* Paternal (Gold) */
+        .node.paternal.verified {
+            border-color: var(--paternal-color);
+            box-shadow: 0 0 15px var(--accent-gold-glow);
+        }
+        .node.paternal .node-badge { color: var(--paternal-color); }
+        .node.paternal .node-title { color: var(--paternal-color); }
+
+        /* Maternal (Purple) */
+        .node.maternal.verified {
+            border-color: var(--maternal-color);
+            box-shadow: 0 0 15px var(--maternal-glow);
+        }
+        .node.maternal .node-badge { color: var(--maternal-color); }
+        .node.maternal .node-title { color: var(--maternal-color); }
+
+        .node img {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--border-light);
+            margin-right: 1rem;
+            background: #000;
+        }
+
+        .node-info {
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            flex: 1;
+        }
+
+        .node-name {
+            font-weight: 600;
+            font-size: 0.95rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            color: var(--text-main);
+        }
+
+        .node-title {
+            font-family: 'Cinzel', serif;
+            font-size: 0.7rem;
+            color: #80cbc4; /* Default Teal */
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 2px;
+            font-weight: 600;
+        }
+
+        .node-dates {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+        
+        .node-badge {
+            font-size: 0.6rem;
+            color: var(--accent-gold);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 4px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .node.verified .node-badge { opacity: 1; }
+
+        /* CONNECTIONS */
+        svg {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            overflow: visible;
+        }
+        path { fill: none; stroke-linecap: round; transition: stroke 0.3s; }
+        .link-parent { stroke: #444; stroke-width: 2px; }
+        .link-spouse { stroke: #666; stroke-width: 1.5px; stroke-dasharray: 4; opacity: 0.6; }
+
+        /* MODALS */
+        .modal-mask {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85);
+            display: flex; justify-content: center; align-items: center;
+            z-index: 1000;
+            opacity: 0; pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        .modal-mask.active { opacity: 1; pointer-events: auto; }
+
+        .modal {
+            background: var(--bg-panel);
+            border: 1px solid var(--border-light);
+            width: 600px;
+            max-width: 95%;
+            max-height: 90vh;
+            border-radius: 8px;
+            padding: 2rem;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        }
+
+        .modal-close {
+            position: absolute; top: 1rem; right: 1rem;
+            background: none; border: none;
+            color: var(--text-muted); font-size: 1.5rem;
+            cursor: pointer;
+        }
+        .modal-close:hover { color: var(--text-main); }
+
+        /* FORMS */
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        .form-full { grid-column: span 2; }
+        
+        label { display: block; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.4rem; }
+        input, select, textarea {
+            width: 100%; background: #151515; border: 1px solid var(--border-light);
+            color: white; padding: 0.8rem; border-radius: 4px;
+            font-family: inherit; margin-bottom: 1rem;
+        }
+        input:focus, textarea:focus { border-color: var(--accent-gold); }
+        
+        /* SEARCH DROPDOWN */
+        #search-results {
+            position: absolute; top: 100%; left: 0; right: 0;
+            background: var(--bg-panel); border: 1px solid var(--border-light);
+            border-radius: 0 0 8px 8px; max-height: 300px; overflow-y: auto;
+            z-index: 200; display: none;
+        }
+        #search-results.active { display: block; }
+        .result-item { padding: 0.8rem; cursor: pointer; border-bottom: 1px solid var(--border-light); display: flex; align-items: center; gap: 10px; }
+        .result-item:hover { background: var(--bg-card); }
+        .result-item img { width: 30px; height: 30px; border-radius: 50%; object-fit: cover; }
+
+        /* NOTIFICATIONS */
+        #toast {
+            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(100px);
+            background: var(--accent-gold); color: #000;
+            padding: 1rem 2rem; border-radius: 50px; font-weight: 600;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 2000;
+        }
+        #toast.active { transform: translateX(-50%) translateY(0); }
+    </style>
+</head>
+<body>
+
+    <header class="ui-element">
+        <div class="brand">
+            <h1>THE INFINITE FAMILY TREE</h1>
+            <span>The Infinite Archive</span>
+        </div>
+
+        <div class="search-bar">
+            <input type="text" id="search" placeholder="Search bloodline...">
+            <div id="search-results"></div>
+        </div>
+
+        <div class="actions">
+            <button class="btn magic" onclick="ui.openOracle()">✨ Oracle</button>
+            <button class="btn" onclick="ui.openManifesto()">Manifesto</button>
+            <button class="btn" onclick="app.backup()">Backup</button>
+            <button class="btn" onclick="app.restore()">Restore</button>
+            <button class="btn elder" id="btn-elder" onclick="app.toggleElder()">Elder Access</button>
+            <button class="btn primary" onclick="ui.openProfile()">+ New Member</button>
+        </div>
+    </header>
+
+    <div id="viewport">
+        <div id="world">
+            <svg id="connections"></svg>
+            <div id="nodes-layer"></div>
+        </div>
+    </div>
+
+    <!-- TOAST -->
+    <div id="toast">Operation Complete</div>
+
+    <!-- HIDDEN INPUTS -->
+    <input type="file" id="file-input" style="display:none" onchange="app.processRestore(this)">
+
+    <!-- ORACLE MODAL (AI CHAT) -->
+    <div class="modal-mask" id="modal-oracle">
+        <div class="modal">
+            <button class="modal-close" onclick="ui.closeModals()">×</button>
+            <h2>✨ The Ancestral Oracle</h2>
+            <p style="color:var(--text-muted); font-size: 0.9rem;">The Oracle reads the entire archive to answer your questions.</p>
+            
+            <div id="oracle-chat" style="height: 300px; overflow-y: auto; background: #111; padding: 1rem; border-radius: 4px; margin: 1rem 0; border: 1px solid var(--border-light);">
+                <div class="chat-msg ai">Greetings. I hold the memories of the Ntilane bloodline. What do you seek?</div>
+            </div>
+            
+            <div style="display: flex; gap: 0.5rem;">
+                <input type="text" id="oracle-input" placeholder="e.g. Who lived the longest? or Tell me about the Mabasos..." style="margin: 0;" onkeydown="if(event.key==='Enter') app.askOracle()">
+                <button class="btn magic" onclick="app.askOracle()">Ask</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MANIFESTO MODAL -->
+    <div class="modal-mask" id="modal-manifesto">
+        <div class="modal">
+            <button class="modal-close" onclick="ui.closeModals()">×</button>
+            <h2>Archive Manifesto</h2>
+            <div style="margin-top: 1.5rem; line-height: 1.6; color: var(--text-muted);">
+                <p>This system is the <strong>NTILANE ∞ — The Infinite Family Tree</strong>.</p>
+                <p><strong>Core Purpose:</strong> A permanent, expandable digital archive allowing the family to add members, upload histories, and view the entire bloodline recursively forever.</p>
+                <p><strong>Data Sovereignty:</strong> Data is stored locally or exported as JSON. No external servers own the history.</p>
+                <p><strong>Security Model:</strong> Elders verify ancestors. Descendants maintain their own branches.</p>
+                <hr style="border: 0; border-top: 1px solid #333; margin: 2rem 0;">
+                <p><em>Built for the Ntilane bloodline to endure for hundreds of years.</em></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- PROFILE MODAL -->
+    <div class="modal-mask" id="modal-profile">
+        <div class="modal">
+            <button class="modal-close" onclick="ui.closeModals()">×</button>
+            <h2 id="modal-title">Member Profile</h2>
+            <form id="form-profile" style="margin-top: 1.5rem;">
+                <input type="hidden" id="p-id">
+                
+                <div style="display: flex; gap: 1.5rem; margin-bottom: 2rem;">
+                    <div style="width: 120px; text-align: center;">
+                        <div id="p-photo-display" style="width: 120px; height: 120px; background: #000; border-radius: 50%; border: 2px solid var(--border-light); overflow: hidden; margin-bottom: 0.5rem; position: relative;">
+                            <img src="" style="width: 100%; height: 100%; object-fit: cover; display: none;" id="p-img-tag">
+                            <span style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #555; font-size: 0.8rem;">No Photo</span>
+                        </div>
+                        <button type="button" class="btn" style="width: 100%; font-size: 0.7rem;" onclick="document.getElementById('p-photo-upload').click()">Upload</button>
+                        <input type="file" id="p-photo-upload" style="display: none;" accept="image/*">
+                    </div>
+                    
+                    <div style="flex: 1;">
+                        <label>Full Name</label>
+                        <input type="text" id="p-name" required placeholder="e.g. Thabo Ntilane">
+                        
+                        <label style="margin-top: 0.5rem;">Title / Role</label>
+                        <input type="text" id="p-title" placeholder="e.g. Great Grandfather">
+
+                        <div class="form-grid">
+                            <div>
+                                <label>Clan Name</label>
+                                <input type="text" id="p-clan" value="Ntilane">
+                            </div>
+                            <div>
+                                <label>Gender</label>
+                                <select id="p-gender">
+                                    <option value="male">Male</option>
+                                    <option value="female">Female</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-grid">
+                    <div>
+                        <label>Birth Date</label>
+                        <input type="date" id="p-birth">
+                    </div>
+                    <div>
+                        <label>Death Date (if passed)</label>
+                        <input type="date" id="p-death">
+                    </div>
+                </div>
+
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 0.4rem;">
+                    <label style="margin-bottom:0;">Biography & Stories</label>
+                    <button type="button" class="btn magic" style="padding: 2px 10px; font-size: 0.7rem;" onclick="app.magicBio()">✨ Auto-Write Bio</button>
+                </div>
+                <textarea id="p-bio" rows="4" placeholder="Life history..."></textarea>
+
+                <!-- RELATIONSHIPS SECTION -->
+                <div style="background: rgba(0,0,0,0.2); padding: 1rem; border-radius: 6px; margin-bottom: 1rem;">
+                    <label style="color: var(--accent-gold);">Connect Family</label>
+                    <div class="form-grid" style="align-items: end;">
+                        <div>
+                            <select id="p-rel-type">
+                                <option value="parent">is Child of</option>
+                                <option value="spouse">is Spouse of</option>
+                                <option value="child">is Parent of</option>
+                            </select>
+                        </div>
+                        <div>
+                            <select id="p-rel-target">
+                                <option disabled selected>Select Relative...</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button type="button" class="btn" style="width: 100%; margin-top: 0.5rem;" onclick="ui.addRelationTemp()">+ Link Relationship</button>
+                    <div id="p-rel-tags" style="margin-top: 0.5rem; display: flex; flex-wrap: wrap; gap: 0.5rem;"></div>
+                </div>
+
+                <!-- ELDER SECTION -->
+                <div id="elder-controls" style="display: none; border-top: 1px solid var(--border-light); padding-top: 1rem;">
+                    <label style="color: var(--accent-gold); display: flex; align-items: center; gap: 0.5rem;">
+                        <input type="checkbox" id="p-verified" style="width: auto; margin: 0;"> 
+                        Verified Ancestor (Lock Record)
+                    </label>
+                </div>
+
+                <div style="display: flex; justify-content: flex-end; gap: 1rem; margin-top: 2rem;">
+                    <button type="button" class="btn" onclick="ui.closeModals()">Cancel</button>
+                    <button type="submit" class="btn primary">Save to Archive</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        /* * ------------------------------------------------------------------
+         * DATA ENGINE
+         * ------------------------------------------------------------------
+         */
+        const apiKey = ""; // Gemini API Key injected by environment
+
+        const Gemini = {
+            async generate(prompt, systemPrompt = "") {
+                try {
+                    const response = await fetch(
+                        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`,
+                        {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                contents: [{ parts: [{ text: prompt }] }],
+                                systemInstruction: { parts: [{ text: systemPrompt }] }
+                            })
+                        }
+                    );
+                    const data = await response.json();
+                    return data.candidates?.[0]?.content?.parts?.[0]?.text || "The spirits are silent (API Error).";
+                } catch (e) {
+                    console.error(e);
+                    return "Connection to the beyond failed.";
+                }
+            }
+        };
+
+        const Utils = {
+            id: () => Math.random().toString(36).substr(2, 9),
+            now: () => new Date().toISOString().split('T')[0],
+        };
+
+        const DB = {
+            data: {},
+            
+            init() {
+                const stored = localStorage.getItem('ntilane_v1');
+                if (stored) {
+                    this.data = JSON.parse(stored);
+                } else {
+                    // Seed Data from User Request
+                    const genId = () => Math.random().toString(36).substr(2, 9);
+                    
+                    // 1. Father's Side (Grandparents) - PATERNAL
+                    const seelani = { id: genId(), fullName: "Seelani Ntilane", title: "Grandfather", side: "paternal", clan: "Ntilane", gender: "male", birthDate: "", verified: true, parents: [], spouses: [], children: [], bio: "Grandfather (Father's Side)" };
+                    const claudia = { id: genId(), fullName: "Claudia Ntilane", title: "Grandmother", side: "paternal", clan: "Ntilane", gender: "female", birthDate: "", verified: true, parents: [], spouses: [], children: [], bio: "Grandmother (Father's Side)" };
+                    // Link Spouses
+                    seelani.spouses.push(claudia.id); claudia.spouses.push(seelani.id);
+
+                    // 1.5 Father's Side (Great Grandparents) - PATERNAL
+                    const nnoosi = { id: genId(), fullName: "Nnoosi Mabote", title: "Great Grandfather", side: "paternal", clan: "Mabote", gender: "male", birthDate: "", verified: true, parents: [], spouses: [], children: [], bio: "Great Grandfather (Father's Side)" };
+                    const mamotebang = { id: genId(), fullName: "Mamotebang Mabote", title: "Great Grandmother", side: "paternal", clan: "Mabote", gender: "female", birthDate: "", verified: true, parents: [], spouses: [], children: [], bio: "Great Grandmother (Father's Side)" };
+                    // Link Spouses
+                    nnoosi.spouses.push(mamotebang.id); mamotebang.spouses.push(nnoosi.id);
+                    // Link to Child (Claudia)
+                    nnoosi.children.push(claudia.id); mamotebang.children.push(claudia.id);
+                    claudia.parents.push(nnoosi.id); claudia.parents.push(mamotebang.id);
+
+                    // 2. Mother's Side (Grandparents) - MATERNAL
+                    const william = { id: genId(), fullName: "William Sibiya", title: "Grandfather", side: "maternal", clan: "Sibiya", gender: "male", birthDate: "", verified: true, parents: [], spouses: [], children: [], bio: "Grandfather (Mother's Side)" };
+                    const annah = { id: genId(), fullName: "Annah Mangwase Tamle", title: "Grandmother", side: "maternal", clan: "Tamle", gender: "female", birthDate: "", verified: true, parents: [], spouses: [], children: [], bio: "Grandmother (Mother's Side)" };
+                    // Link Spouses
+                    william.spouses.push(annah.id); annah.spouses.push(william.id);
+
+                    // 3. Mother's Side (Great Grandparents) - MATERNAL
+                    const kaola = { id: genId(), fullName: "Kaola Mabaso", title: "Great Grandfather", side: "maternal", clan: "Mabaso", gender: "male", birthDate: "", verified: true, parents: [], spouses: [], children: [], bio: "Great Grandfather (Mother's Side)" };
+                    const marriam = { id: genId(), fullName: "Marriam Mabaso", title: "Great Grandmother", side: "maternal", clan: "Mabaso", gender: "female", birthDate: "", verified: true, parents: [], spouses: [], children: [], bio: "Great Grandmother (Mother's Side)" };
+                    // Link Spouses
+                    kaola.spouses.push(marriam.id); marriam.spouses.push(kaola.id);
+
+                    // 3.5 Mother's Side (Great Great Grandparents) - MATERNAL
+                    const mbendeni = { id: genId(), fullName: "Mbendeni Mabaso", title: "Great Great Grandfather", side: "maternal", clan: "Mabaso", gender: "male", birthDate: "", verified: true, parents: [], spouses: [], children: [], bio: "Great Great Grandfather (Mother's Side)" };
+                    const ntombiphantsi = { id: genId(), fullName: "Ntombiphantsi Mabaso", title: "Great Great Grandmother", side: "maternal", clan: "Mabaso", gender: "female", birthDate: "", verified: true, parents: [], spouses: [], children: [], bio: "Great Great Grandmother (Mother's Side)" };
+                    // Link Spouses
+                    mbendeni.spouses.push(ntombiphantsi.id); ntombiphantsi.spouses.push(mbendeni.id);
+                    // Link to Child (Kaola)
+                    mbendeni.children.push(kaola.id); ntombiphantsi.children.push(kaola.id);
+                    kaola.parents.push(mbendeni.id); kaola.parents.push(ntombiphantsi.id);
+
+                    // LINK MOTHER'S LINEAGE HIERARCHY
+                    kaola.children.push(annah.id); marriam.children.push(annah.id);
+                    annah.parents.push(kaola.id); annah.parents.push(marriam.id);
+
+                    // 4. Placeholders
+                    const father = { id: genId(), fullName: "Father (Placeholder)", side: "paternal", clan: "Ntilane", gender: "male", verified: false, parents: [seelani.id, claudia.id], spouses: [], children: [] };
+                    const mother = { id: genId(), fullName: "Mother (Placeholder)", side: "maternal", clan: "Sibiya", gender: "female", verified: false, parents: [william.id, annah.id], spouses: [], children: [] };
+                    
+                    // Link Parents to Placeholders
+                    seelani.children.push(father.id); claudia.children.push(father.id);
+                    william.children.push(mother.id); annah.children.push(mother.id);
+                    
+                    // Link Placeholders
+                    father.spouses.push(mother.id); mother.spouses.push(father.id);
+
+                    // Add all to DB
+                    [seelani, claudia, nnoosi, mamotebang, william, annah, kaola, marriam, mbendeni, ntombiphantsi, father, mother].forEach(p => this.data[p.id] = p);
+                    this.save();
+                }
+            },
+
+            save() {
+                localStorage.setItem('ntilane_v1', JSON.stringify(this.data));
+            },
+
+            get(id) { return this.data[id]; },
+            getAll() { return Object.values(this.data); },
+
+            add(person) {
+                if (!person.id) person.id = Utils.id();
+                // Ensure arrays
+                person.parents = person.parents || [];
+                person.children = person.children || [];
+                person.spouses = person.spouses || [];
+                
+                this.data[person.id] = person;
+                this.save();
+                return person.id;
+            },
+
+            link(idA, idB, type) {
+                const a = this.data[idA];
+                const b = this.data[idB];
+                if (!a || !b) return;
+
+                if (type === 'parent') { // A is child of B
+                    if (!a.parents.includes(idB)) a.parents.push(idB);
+                    if (!b.children.includes(idA)) b.children.push(idA);
+                } else if (type === 'spouse') {
+                    if (!a.spouses.includes(idB)) a.spouses.push(idB);
+                    if (!b.spouses.includes(idA)) b.spouses.push(idA);
+                } else if (type === 'child') { // A is parent of B
+                    if (!a.children.includes(idB)) a.children.push(idB);
+                    if (!b.parents.includes(idA)) b.parents.push(idA);
+                }
+                this.save();
+            }
+        };
+
+        /* * ------------------------------------------------------------------
+         * APP LOGIC
+         * ------------------------------------------------------------------
+         */
+        const app = {
+            isElder: false,
+            
+            async askOracle() {
+                const input = document.getElementById('oracle-input');
+                const chat = document.getElementById('oracle-chat');
+                const question = input.value.trim();
+                
+                if (!question) return;
+
+                // Add User Message
+                chat.innerHTML += `<div class="chat-msg user">${question}</div>`;
+                chat.innerHTML += `<div class="chat-msg ai typing-indicator" id="oracle-loading">Consulting the ancestors...</div>`;
+                chat.scrollTop = chat.scrollHeight;
+                input.value = '';
+
+                // Context Preparation: Summarize DB for AI
+                const allPeople = DB.getAll().map(p => {
+                    const father = p.parents[0] ? DB.get(p.parents[0])?.fullName : null;
+                    const mother = p.parents[1] ? DB.get(p.parents[1])?.fullName : null;
+                    return `- ${p.fullName} (${p.clan}), Born: ${p.birthDate || 'Unknown'}, Died: ${p.deathDate || 'Living'}. Parents: ${father}, ${mother}. Bio: ${p.bio}`;
+                }).join('\n');
+
+                const systemPrompt = `You are the Keeper of the Ntilane Archives. You have access to the full family tree data. Answer the user's question based strictly on this data. Be wise, respectful, and slightly poetic/historical in tone. If info is missing, say so politely.
+                
+                FAMILY DATA:
+                ${allPeople}`;
+
+                const answer = await Gemini.generate(question, systemPrompt);
+                
+                document.getElementById('oracle-loading').remove();
+                chat.innerHTML += `<div class="chat-msg ai">${answer}</div>`;
+                chat.scrollTop = chat.scrollHeight;
+            },
+
+            async magicBio() {
+                const name = document.getElementById('p-name').value;
+                const clan = document.getElementById('p-clan').value;
+                const gender = document.getElementById('p-gender').value;
+                const birth = document.getElementById('p-birth').value;
+                const bioField = document.getElementById('p-bio');
+
+                if (!name) { alert("Please enter at least a name first."); return; }
+
+                bioField.placeholder = "Summoning a story...";
+                ui.toast("Drafting Biography...");
+
+                const prompt = `Write a short, dignified, and warm biography for a family tree archive.
+                Person: ${name}
+                Gender: ${gender}
+                Clan: ${clan}
+                Birth Date: ${birth || "Unknown"}
+                
+                The biography should be 2-3 sentences long. It should sound like a historical record or a cherished memory.`;
+
+                const bio = await Gemini.generate(prompt);
+                bioField.value = bio;
+                ui.toast("Biography Generated");
+            },
+
+            toggleElder() {
+                if (this.isElder) {
+                    this.isElder = false;
+                    document.getElementById('btn-elder').classList.remove('active');
+                    ui.toast("Elder Mode Deactivated");
+                } else {
+                    const pwd = prompt("Enter Elder Password (use: 'root'):");
+                    if (pwd === 'root') {
+                        this.isElder = true;
+                        document.getElementById('btn-elder').classList.add('active');
+                        ui.toast("Elder Access Granted");
+                    } else if (pwd !== null) {
+                        alert("Incorrect Password");
+                    }
+                }
+            },
+
+            backup() {
+                const blob = new Blob([JSON.stringify(DB.data)], {type: 'application/json'});
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `ntilane_backup_${Utils.now()}.json`;
+                a.click();
+            },
+
+            restore() {
+                document.getElementById('file-input').click();
+            },
+
+            processRestore(input) {
+                const file = input.files[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    try {
+                        DB.data = JSON.parse(e.target.result);
+                        DB.save();
+                        ui.render();
+                        ui.toast("Database Restored");
+                    } catch(err) {
+                        alert("Corrupt file");
+                    }
+                };
+                reader.readAsText(file);
+            }
+        };
+
+        /* * ------------------------------------------------------------------
+         * UI CONTROLLER & LAYOUT ENGINE
+         * ------------------------------------------------------------------
+         */
+        const ui = {
+            state: {
+                scale: 1,
+                x: window.innerWidth / 2,
+                y: 50,
+                drag: false,
+                lastX: 0, lastY: 0
+            },
+            tempRelations: [],
+
+            init() {
+                DB.init();
+                this.setupCanvas();
+                this.setupForms();
+                this.render();
+            },
+
+            setupCanvas() {
+                const viewport = document.getElementById('viewport');
+                const world = document.getElementById('world');
+                
+                viewport.addEventListener('mousedown', e => {
+                    if(e.target === viewport || e.target.id === 'connections') {
+                        this.state.drag = true;
+                        this.state.lastX = e.clientX;
+                        this.state.lastY = e.clientY;
+                        viewport.style.cursor = 'grabbing';
+                    }
+                });
+                
+                window.addEventListener('mouseup', () => {
+                    this.state.drag = false;
+                    viewport.style.cursor = 'grab';
+                });
+
+                window.addEventListener('mousemove', e => {
+                    if (this.state.drag) {
+                        const dx = e.clientX - this.state.lastX;
+                        const dy = e.clientY - this.state.lastY;
+                        this.state.x += dx;
+                        this.state.y += dy;
+                        this.state.lastX = e.clientX;
+                        this.state.lastY = e.clientY;
+                        this.updateTransform();
+                    }
+                });
+
+                viewport.addEventListener('wheel', e => {
+                    e.preventDefault();
+                    const delta = e.deltaY * -0.001;
+                    const newScale = Math.min(Math.max(0.1, this.state.scale + delta), 4);
+                    this.state.scale = newScale;
+                    this.updateTransform();
+                });
+
+                // Search
+                const searchInput = document.getElementById('search');
+                searchInput.addEventListener('input', (e) => this.handleSearch(e.target.value));
+            },
+
+            updateTransform() {
+                const world = document.getElementById('world');
+                world.style.transform = `translate(${this.state.x}px, ${this.state.y}px) scale(${this.state.scale})`;
+            },
+
+            toast(msg) {
+                const t = document.getElementById('toast');
+                t.textContent = msg;
+                t.classList.add('active');
+                setTimeout(() => t.classList.remove('active'), 3000);
+            },
+
+            /* CORE LAYOUT ALGORITHM */
+            render() {
+                const layer = document.getElementById('nodes-layer');
+                const svg = document.getElementById('connections');
+                layer.innerHTML = '';
+                svg.innerHTML = '';
+
+                const people = DB.getAll();
+                if (people.length === 0) return;
+
+                // 1. Assign Generations (Levels)
+                const levels = {}; // level -> [ids]
+                const visited = new Set();
+                
+                // Find Roots (No parents recorded)
+                const roots = people.filter(p => p.parents.length === 0);
+                
+                const processQueue = roots.map(r => ({ id: r.id, lvl: 0 }));
+                
+                while (processQueue.length > 0) {
+                    const { id, lvl } = processQueue.shift();
+                    if (visited.has(id)) continue;
+                    visited.add(id);
+
+                    if (!levels[lvl]) levels[lvl] = [];
+                    levels[lvl].push(id);
+
+                    const p = DB.get(id);
+                    
+                    // Add children to next level
+                    p.children.forEach(c => processQueue.push({ id: c, lvl: lvl + 1 }));
+                    
+                    // Add spouses to SAME level immediately to keep them close logic-wise
+                    // (Actually, we just mark them, we'll sort visually later)
+                    p.spouses.forEach(s => {
+                        if (!visited.has(s)) {
+                            visited.add(s);
+                            levels[lvl].push(s);
+                        }
+                    });
+                }
+
+                // Handle islands (disconnected graphs) - put them on level 0
+                people.forEach(p => {
+                    if (!visited.has(p.id)) {
+                        if (!levels[0]) levels[0] = [];
+                        levels[0].push(p.id);
+                        visited.add(p.id);
+                    }
+                });
+
+                // 2. Position Nodes
+                const nodeMap = {}; // id -> {x, y}
+                const levelKeys = Object.keys(levels).sort((a,b) => a-b);
+                
+                levelKeys.forEach(lvl => {
+                    let levelIds = levels[lvl];
+                    
+                    // **SORTING LOGIC**: Group Spouses together
+                    const sortedLevel = [];
+                    const processedInLevel = new Set();
+
+                    levelIds.forEach(id => {
+                        if (processedInLevel.has(id)) return;
+                        
+                        // Add person
+                        sortedLevel.push(id);
+                        processedInLevel.add(id);
+
+                        // Find spouse in this level and add immediately
+                        const p = DB.get(id);
+                        p.spouses.forEach(sid => {
+                            if (levelIds.includes(sid) && !processedInLevel.has(sid)) {
+                                sortedLevel.push(sid);
+                                processedInLevel.add(sid);
+                            }
+                        });
+                    });
+                    
+                    // Calculate visual width to center the row
+                    const spacing = 240; // Card width + gap
+                    const rowWidth = sortedLevel.length * spacing;
+                    let startX = -(rowWidth / 2);
+                    const y = lvl * 180; // Vertical spacing
+
+                    sortedLevel.forEach(id => {
+                        nodeMap[id] = { x: startX, y: y };
+                        this.drawNode(DB.get(id), startX, y, layer);
+                        startX += spacing;
+                    });
+                });
+
+                // 3. Draw Lines
+                // Parent -> Child
+                people.forEach(p => {
+                    const pos = nodeMap[p.id];
+                    if (!pos) return;
+
+                    // Children
+                    p.children.forEach(cid => {
+                        const cPos = nodeMap[cid];
+                        if (cPos) {
+                            this.drawPath(pos.x + 110, pos.y + 100, cPos.x + 110, cPos.y, svg, 'link-parent');
+                        }
+                    });
+
+                    // Spouses
+                    p.spouses.forEach(sid => {
+                        // Avoid double drawing
+                        if (p.id < sid) {
+                            const sPos = nodeMap[sid];
+                            if (sPos) {
+                                this.drawPath(pos.x + 220, pos.y + 50, sPos.x, sPos.y + 50, svg, 'link-spouse');
+                            }
+                        }
+                    });
+                });
+            },
+
+            drawNode(p, x, y, container) {
+                const el = document.createElement('div');
+                // Add side class (paternal/maternal)
+                el.className = `node ${p.verified ? 'verified' : ''} ${p.side ? p.side : ''}`;
+                el.style.transform = `translate(${x}px, ${y}px)`;
+                el.onclick = () => this.openProfile(p.id);
+
+                const img = p.photo ? p.photo : ''; 
+                const displayImg = img ? `<img src="${img}">` : `<div style="width:60px;height:60px;background:#333;border-radius:50%;margin-right:1rem;display:flex;align-items:center;justify-content:center;font-size:1.5rem;color:#555;">${p.fullName.charAt(0)}</div>`;
+
+                el.innerHTML = `
+                    ${displayImg}
+                    <div class="node-info">
+                        <div class="node-name">${p.fullName}</div>
+                        ${p.title ? `<div class="node-title">${p.title}</div>` : ''}
+                        <div class="node-dates">${Utils.getAge(p.birthDate, p.deathDate)}</div>
+                        <div class="node-badge">Verified</div>
+                    </div>
+                `;
+                container.appendChild(el);
+            },
+
+            drawPath(x1, y1, x2, y2, svg, cls) {
+                const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+                let d;
+                if (cls === 'link-spouse') {
+                    d = `M ${x1} ${y1} L ${x2} ${y2}`;
+                } else {
+                    const midY = (y1 + y2) / 2;
+                    d = `M ${x1} ${y1} C ${x1} ${midY}, ${x2} ${midY}, ${x2} ${y2}`;
+                }
+                path.setAttribute("d", d);
+                path.setAttribute("class", cls);
+                svg.appendChild(path);
+            },
+
+            /* FORM HANDLING */
+            openProfile(id = null) {
+                this.tempRelations = [];
+                const form = document.getElementById('form-profile');
+                form.reset();
+                document.getElementById('p-rel-tags').innerHTML = '';
+                
+                // Populate Selects
+                const sel = document.getElementById('p-rel-target');
+                sel.innerHTML = '<option disabled selected>Select Relative...</option>';
+                DB.getAll().forEach(p => {
+                    if (p.id !== id) {
+                        const op = document.createElement('option');
+                        op.value = p.id;
+                        op.text = p.fullName;
+                        sel.appendChild(op);
+                    }
+                });
+
+                if (id) {
+                    const p = DB.get(id);
+                    // Check permissions
+                    if (p.verified && !app.isElder) {
+                        alert("Restricted: Only Elders can edit verified ancestors.");
+                        return;
+                    }
+                    
+                    document.getElementById('modal-title').textContent = "Edit Member";
+                    document.getElementById('p-id').value = p.id;
+                    document.getElementById('p-name').value = p.fullName;
+                    document.getElementById('p-title').value = p.title || '';
+                    document.getElementById('p-clan').value = p.clan;
+                    document.getElementById('p-gender').value = p.gender;
+                    document.getElementById('p-birth').value = p.birthDate;
+                    document.getElementById('p-death').value = p.deathDate;
+                    document.getElementById('p-bio').value = p.bio || '';
+                    document.getElementById('p-verified').checked = p.verified;
+                    
+                    if (p.photo) {
+                        document.getElementById('p-img-tag').src = p.photo;
+                        document.getElementById('p-img-tag').style.display = 'block';
+                    } else {
+                         document.getElementById('p-img-tag').style.display = 'none';
+                    }
+                } else {
+                    document.getElementById('modal-title').textContent = "New Family Member";
+                    document.getElementById('p-id').value = '';
+                    document.getElementById('p-img-tag').style.display = 'none';
+                }
+
+                // Show Elder controls
+                document.getElementById('elder-controls').style.display = app.isElder ? 'block' : 'none';
+                
+                document.getElementById('modal-profile').classList.add('active');
+            },
+
+            setupForms() {
+                // Image Upload Preview
+                document.getElementById('p-photo-upload').addEventListener('change', function() {
+                    if (this.files && this.files[0]) {
+                        const reader = new FileReader();
+                        reader.onload = (e) => {
+                            const img = document.getElementById('p-img-tag');
+                            img.src = e.target.result;
+                            img.style.display = 'block';
+                        };
+                        reader.readAsDataURL(this.files[0]);
+                    }
+                });
+
+                // Add Temp Relation
+                this.addRelationTemp = () => {
+                    const type = document.getElementById('p-rel-type').value;
+                    const targetId = document.getElementById('p-rel-target').value;
+                    const targetName = document.getElementById('p-rel-target').options[document.getElementById('p-rel-target').selectedIndex].text;
+                    
+                    if (!targetId || targetId.startsWith('Select')) return;
+
+                    this.tempRelations.push({ type, targetId });
+                    
+                    const tag = document.createElement('div');
+                    tag.style.background = '#333';
+                    tag.style.padding = '4px 8px';
+                    tag.style.borderRadius = '4px';
+                    tag.style.fontSize = '0.7rem';
+                    tag.innerText = `${type == 'parent' ? 'Child of' : type == 'child' ? 'Parent of' : 'Spouse of'} ${targetName}`;
+                    document.getElementById('p-rel-tags').appendChild(tag);
+                };
+
+                // Save
+                document.getElementById('form-profile').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    
+                    const idInput = document.getElementById('p-id').value;
+                    const isNew = !idInput;
+                    
+                    const p = {
+                        id: idInput,
+                        fullName: document.getElementById('p-name').value,
+                        title: document.getElementById('p-title').value,
+                        clan: document.getElementById('p-clan').value,
+                        gender: document.getElementById('p-gender').value,
+                        birthDate: document.getElementById('p-birth').value,
+                        deathDate: document.getElementById('p-death').value,
+                        bio: document.getElementById('p-bio').value,
+                        verified: document.getElementById('p-verified').checked,
+                        photo: document.getElementById('p-img-tag').src.startsWith('data') ? document.getElementById('p-img-tag').src : null
+                    };
+
+                    // Preserve existing relations if edit
+                    if (!isNew) {
+                        const old = DB.get(p.id);
+                        p.parents = old.parents;
+                        p.children = old.children;
+                        p.spouses = old.spouses;
+                    }
+
+                    const savedId = DB.add(p);
+
+                    // Process temp relations
+                    this.tempRelations.forEach(rel => {
+                        DB.link(savedId, rel.targetId, rel.type);
+                    });
+
+                    this.closeModals();
+                    this.render();
+                    this.toast("Record Saved");
+                });
+            },
+
+            handleSearch(val) {
+                const res = document.getElementById('search-results');
+                if (val.length < 2) {
+                    res.classList.remove('active');
+                    return;
+                }
+                
+                const matches = DB.getAll().filter(p => p.fullName.toLowerCase().includes(val.toLowerCase()));
+                res.innerHTML = '';
+                
+                if (matches.length > 0) {
+                    res.classList.add('active');
+                    matches.forEach(m => {
+                        const div = document.createElement('div');
+                        div.className = 'result-item';
+                        div.innerHTML = `<span>${m.fullName}</span>`;
+                        div.onclick = () => {
+                            this.openProfile(m.id); // Or center view
+                            res.classList.remove('active');
+                            document.getElementById('search').value = '';
+                        };
+                        res.appendChild(div);
+                    });
+                } else {
+                    res.classList.remove('active');
+                }
+            },
+
+            openManifesto() { document.getElementById('modal-manifesto').classList.add('active'); },
+            openOracle() { document.getElementById('modal-oracle').classList.add('active'); },
+            closeModals() { document.querySelectorAll('.modal-mask').forEach(m => m.classList.remove('active')); }
+        };
+
+        // Helpers
+        Utils.getAge = (b, d) => {
+            if (!b) return '';
+            const y1 = parseInt(b.split('-')[0]);
+            const y2 = d ? parseInt(d.split('-')[0]) : new Date().getFullYear();
+            return `${y1} - ${d ? y2 : ''} (${y2-y1} yrs)`;
+        };
+
+        // Boot
+        window.onload = () => ui.init();
+
+    </script>
+</body>
+</html>
